@@ -7,6 +7,7 @@ const sample: RecordItem = {
   name: "Specimen A",
   description: "Collected near river bank",
   status: "pending",
+  version:100
 };
 
 describe("RecordCard", () => {
@@ -14,6 +15,15 @@ describe("RecordCard", () => {
     const onSelect = vi.fn();
     render(<RecordCard record={sample} onSelect={onSelect} />);
     expect(screen.getByText("Specimen A")).toBeInTheDocument();
-    expect(screen.getByText("pending")).toBeInTheDocument();
+    expect(screen.getByText("Pending")).toBeInTheDocument();
   });
+});
+
+it("calls onSelect when Review button is clicked", async () => {
+  const onSelect = vi.fn();
+  render(<RecordCard record={sample} onSelect={onSelect} />);
+  
+  await screen.getByRole("button", { name: /review/i }).click();
+  
+  expect(onSelect).toHaveBeenCalledWith(sample);
 });

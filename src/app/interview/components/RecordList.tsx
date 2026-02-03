@@ -63,6 +63,11 @@ export default function RecordList() {
             ))}
       </div>
 
+      {selectedRecord && <RecordDetailDialog record={selectedRecord} onClose={() => setSelectedRecord(null)} />}
+      {records.length === 0 && !loading && !error && (
+        <p className="text-sm text-muted-foreground">No records found.</p>
+      )}
+      
       <PaginationControls 
         page={page}
         totalPages={Math.ceil(totalCount / limit)}
@@ -71,10 +76,6 @@ export default function RecordList() {
         disabled={loading}
       />
 
-      {selectedRecord && <RecordDetailDialog record={selectedRecord} onClose={() => setSelectedRecord(null)} />}
-      {records.length === 0 && !loading && !error && (
-        <p className="text-sm text-muted-foreground">No records found.</p>
-      )}
 
       <RecordHistoryLog />
 

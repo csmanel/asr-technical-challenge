@@ -36,7 +36,7 @@ const updated = await patchRecord(...);
 setRecords((prev) => prev.map(...));
 
 ```
-- Redundant reLoad wrapped
+- Redundant reLoad wrapper
 
 *RecordList*
 
@@ -151,6 +151,8 @@ const ERROR_MESSAGES: Record<ValidationErrorCode, string> = {
   NOTE_REQUIRED: "A note is required for this status"
 };
 ```
-- Include a translation file for all text 
-- Multiple view types, list as well as grid 
+- Include a translation file for all text rather than typing text inline 
+- Multiple view types for card list, grid or list 
 - Reload button styling/menu styling 
+
+- With more time I would add dialog interaction tests with mocked context
