@@ -1,5 +1,6 @@
 import { RecordsProvider } from './context/RecordsContext';
 import RecordList from './components/RecordList';
+import RecordSummary from './components/RecordSummary';
 
 /**
  * The main interview page. It wraps the record list with the RecordsProvider
@@ -18,6 +19,7 @@ export default function InterviewPage() {
           memory.
         </p>
         <RecordList />
+        <RecordSummary />
       </div>
     </RecordsProvider>
   );

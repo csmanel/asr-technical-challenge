@@ -5,12 +5,24 @@
  */
 export type RecordStatus = 'pending' | 'approved' | 'flagged' | 'needs_revision';
 
+export type UpdateResult = 
+{ success: true } | { success: false; error: string };
+
+export const RECORD_STATUS_LABELS: Record<RecordStatus, string> = {
+  pending: "Pending",
+  approved: "Approved",
+  flagged: "Flagged",
+  needs_revision: "Needs Revision",
+}
+
+export const STATUSES = Object.keys(RECORD_STATUS_LABELS) as RecordStatus[]
 export interface RecordItem {
   id: string;
   name: string;
   status: RecordStatus;
   description: string;
   note?: string;
+  version: number;
 }
 
 /**
