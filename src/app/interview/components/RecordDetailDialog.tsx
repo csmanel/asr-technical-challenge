@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -20,7 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import type { RecordItem, RecordStatus } from "../types";
+import { RECORD_STATUS_LABELS, STATUSES, type RecordItem, type RecordStatus } from "../types";
+import { useRecords } from "../context/RecordsContext";
+import { toast } from "sonner";
 
 interface RecordDetailDialogProps {
   record: RecordItem;
@@ -39,12 +41,49 @@ export default function RecordDetailDialog({
 }: RecordDetailDialogProps) {
   const [status, setStatus] = useState<RecordStatus>(record.status);
   const [note, setNote] = useState<string>(record.note ?? "");
-  const statusOptions: RecordStatus[] = [
-    "pending",
-    "approved",
-    "flagged",
-    "needs_revision",
-  ];
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null); 
+
+  const { updateRecord } = useRecords();
+
+  const validate = (): string | null => {
+    if ((status === 'flagged' || status === 'needs_revision') && !note.trim()) {
+      return `A note is required for status: ${RECORD_STATUS_LABELS[status]}`
+    }
+    return null;
+  }
+
+  const handleSave = async () => {
+  setIsSaving(true);
+   const result = await updateRecord(record.id, {status, note});
+   setIsSaving(false)
+   
+   if (result.success) {
+    toast.success("Record saved");
+    onClose();
+   } else { 
+    // toast.error(result.error)
+    setSaveError(result.error)
+   }
+    
+  };
+  const handleSubmit = async () => {
+    const error = validate();
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+    setValidationError(null);
+    await handleSave();
+  }
+
+  useEffect(() => {
+    if (validationError) {
+      setValidationError(validate());
+    }
+    setSaveError(null);
+  }, [status, note]);
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -68,9 +107,9 @@ export default function RecordDetailDialog({
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                {statusOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
+                {STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {RECORD_STATUS_LABELS[status]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -86,8 +125,8 @@ export default function RecordDetailDialog({
               placeholder="Add a note..."
               className="min-h-24"
             />
-            <p className="mt-1 text-xs text-muted-foreground">
-              Notes help other reviewers understand decisions.
+            <p className={`mt-1 text-xs ${validationError || saveError ? 'text-destructive' : 'text-muted-foreground'}`}>
+              {validationError || saveError || 'Notes help other reviewers understand decisions.'}
             </p>
           </div>
         </div>
@@ -95,7 +134,13 @@ export default function RecordDetailDialog({
           <Button variant="secondary" onClick={() => onClose()}>
             Close
           </Button>
-          <Button variant="default">Save</Button>
+          <Button 
+            variant="default" 
+            onClick={() => handleSubmit()}
+            disabled={!!validationError || isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
