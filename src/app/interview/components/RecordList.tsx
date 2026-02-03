@@ -11,6 +11,8 @@ import RecordSummary from "./RecordSummary";
 import RecordFilter from "./RecordFilter";
 import RecordHistoryLog from "./RecordHistoryLog";
 import PaginationControls from "./PaginationControls";
+import { Loader2 } from "lucide-react";
+import { RecordCardSkeleton } from "./RecordCardSkeleton";
 
 /**
  * RecordList orchestrates the interview page by fetching records via
@@ -25,6 +27,7 @@ export default function RecordList() {
   const handleFilterChange = (value: "all" | RecordStatus) => {
     setStatusFilter(value === "all" ? null : value);
   }
+
 
   return (
     <div className="space-y-6">
@@ -44,17 +47,20 @@ export default function RecordList() {
           </Button>
         </div>
       </div>
-      {error && <p className="text-sm text-destructive">Error: {error}</p>}
-      {loading && (
-        <p className="text-sm text-muted-foreground">Loading records...</p>
+      {error && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+          {error}
+        </div>
       )}
 
       <RecordSummary />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {records.map((record) => (
-          <RecordCard key={record.id} record={record} onSelect={setSelectedRecord} />
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => <RecordCardSkeleton key={i} />)
+          : records.map((record) => (
+              <RecordCard key={record.id} record={record} onSelect={setSelectedRecord} />
+            ))}
       </div>
 
       <PaginationControls 

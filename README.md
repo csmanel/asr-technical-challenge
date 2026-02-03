@@ -144,7 +144,6 @@ const formSchema = z.object({
     { message: "A note is required for submission", path: ["note"] }
   );
 ```
-
 - Stricter error typing: Current errors are just strings. For larger forms, typed error codes with a messages map would be cleaner:
 ```ts
 type ValidationErrorCode = 'NOTE_REQUIRED';
@@ -152,4 +151,6 @@ const ERROR_MESSAGES: Record<ValidationErrorCode, string> = {
   NOTE_REQUIRED: "A note is required for this status"
 };
 ```
-
+- Include a translation file for all text 
+- Multiple view types, list as well as grid 
+- Reload button styling/menu styling 

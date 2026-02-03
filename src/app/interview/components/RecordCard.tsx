@@ -11,7 +11,7 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import type { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button";
 
-import { RECORD_STATUS_LABELS, STATUSES, type RecordItem } from "@/app/interview/types";
+import { RECORD_STATUS_LABELS, type RecordItem } from "@/app/interview/types";
 
 interface RecordCardProps {
   record: RecordItem;
@@ -36,7 +36,7 @@ const statusToVariant: Record<
 
 export default function RecordCard({ record, onSelect }: RecordCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-sm transition-shadow">
+    <Card className="overflow-hidden hover:shadow-md hover:border-primary/30 transition-all duration-200 group">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b">
         <div>
           <CardTitle className="text-base sm:text-lg tracking-tight">
@@ -60,7 +60,7 @@ export default function RecordCard({ record, onSelect }: RecordCardProps) {
         </CardContent>
       )}
       <CardFooter className="flex justify-end mt-auto">
-        <Button variant="secondary" onClick={() => onSelect(record)}>
+        <Button variant="default" onClick={() => onSelect(record)} className="group-hover:shadow-sm transition-shadow">
           Review
         </Button>
       </CardFooter>

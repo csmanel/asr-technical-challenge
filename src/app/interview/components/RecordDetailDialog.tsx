@@ -60,10 +60,10 @@ export default function RecordDetailDialog({
    setIsSaving(false)
    
    if (result.success) {
-    toast.success("Record saved");
+    toast.success("Record successfully updated!");
     onClose();
    } else { 
-    // toast.error(result.error)
+    toast.error(result.error)
     setSaveError(result.error)
    }
     

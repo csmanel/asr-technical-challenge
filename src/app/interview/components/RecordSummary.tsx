@@ -32,9 +32,9 @@ export default function RecordSummary() {
             <button
               key={status}
               onClick={() => handleClick(status)}
-              className={`hover:cursor-pointer rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center shadow-sm hover:bg-card transition-colors ${
+              className={`hover:cursor-pointer rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center shadow-sm hover:bg-secondary/60 transition-colors ${
                 isActive
-                  ? "ring-2 ring-primary bg-card"
+                  ? "ring-1 ring-primary/80 bg-card"
                   : "border bg-card/50"
               }
               `}

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationControlsProps { 
   page: number;
@@ -22,6 +23,7 @@ export default function PaginationControls({
         onClick={onPrevious}
         disabled={page === 1 || disabled}
       >
+        <ChevronLeft className="size-4 mr-1" />
         Previous
       </Button>
       <span className="text-sm text-muted-foreground">
@@ -33,6 +35,7 @@ export default function PaginationControls({
         disabled={page >= totalPages || disabled}
       >
         Next
+        <ChevronRight className="size-4 mr-1" />
       </Button>
     </div>
   )
