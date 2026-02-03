@@ -7,6 +7,10 @@ import type { RecordItem } from "../types";
 import RecordCard from "./RecordCard";
 import RecordDetailDialog from "./RecordDetailDialog";
 import { Button } from "@/components/ui/button";
+import RecordSummary from "./RecordSummary";
+import RecordFilter from "./RecordFilter";
+import { DarkModeToggle } from "./DarkModeToggle";
+import RecordHistoryLog from "./RecordHistoryLog";
 
 /**
  * RecordList orchestrates the interview page by fetching records via
@@ -14,21 +18,11 @@ import { Button } from "@/components/ui/button";
  * handling selection to open the detail dialog.
  */
 export default function RecordList() {
-  const { records, loading, error, refresh, history } = useRecords();
-  const [sel, setSel] = useState<RecordItem | null>(null);
-  const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
+  const { records, loading, error, refresh } = useRecords();
+  const [selectedRecord, setSelectedRecord] = useState<RecordItem | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | RecordItem["status"]>("all");
 
-  const counts: Record<RecordItem["status"], number> = {
-    pending: 0,
-    approved: 0,
-    flagged: 0,
-    needs_revision: 0,
-  };
-  records.forEach((item) => {
-    counts[item.status] += 1;
-  });
-
-  const display = records;
+  const filteredRecords = statusFilter === 'all' ? records : records.filter(record => record.status === statusFilter);
 
   return (
     <div className="space-y-6">
@@ -38,95 +32,39 @@ export default function RecordList() {
             Records
           </h2>
           <p className="text-sm text-muted-foreground">
-            {records.length} total • {display.length} showing
+            {records.length} total • {filteredRecords.length} showing
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-56">
-            <label className="block text-sm font-medium mb-1">
-              Filter by status
-            </label>
-            <select
-              value={fltr}
-              onChange={(e) =>
-                setFltr(e.target.value as "all" | RecordItem["status"])
-              }
-              className="w-full border rounded-md p-2 text-sm bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="all">all</option>
-              <option value="pending">pending</option>
-              <option value="approved">approved</option>
-              <option value="flagged">flagged</option>
-              <option value="needs_revision">needs_revision</option>
-            </select>
-          </div>
+        <div className="flex flex-col sm:flex-row gap-4 ">
+          <RecordFilter value={statusFilter} onChange={setStatusFilter} />
           <Button variant="ghost" onClick={() => refresh()} disabled={loading}>
             Reload
           </Button>
+          <DarkModeToggle />
         </div>
       </div>
       {error && <p className="text-sm text-destructive">Error: {error}</p>}
       {loading && (
         <p className="text-sm text-muted-foreground">Loading records...</p>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-        {(Object.keys(counts) as Array<keyof typeof counts>).map((status) => (
-          <div
-            key={status}
-            className="rounded-lg border bg-card/50 p-3 sm:p-4 flex flex-col items-center justify-center capitalize shadow-sm hover:bg-card transition-colors"
-          >
-            <span className="text-xs sm:text-sm text-muted-foreground">
-              {status.replace("_", " ")}
-            </span>
-            <span className="text-lg sm:text-xl font-semibold tracking-tight">
-              {counts[status]}
-            </span>
-          </div>
-        ))}
-      </div>
+
+      <RecordSummary 
+        activeFilter={statusFilter}
+        onFilterChange={setStatusFilter}
+      />
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {display.map((record) => (
-          <RecordCard key={record.id} record={record} onSelect={setSel} />
+        {filteredRecords.map((record) => (
+          <RecordCard key={record.id} record={record} onSelect={setSelectedRecord} />
         ))}
       </div>
-      {sel && <RecordDetailDialog record={sel} onClose={() => setSel(null)} />}
+      {selectedRecord && <RecordDetailDialog record={selectedRecord} onClose={() => setSelectedRecord(null)} />}
       {records.length === 0 && !loading && !error && (
         <p className="text-sm text-muted-foreground">No records found.</p>
       )}
-      <div className="space-y-2 mt-4">
-        <h3 className="text-base sm:text-lg font-semibold tracking-tight">
-          History
-        </h3>
-        {history && history.length > 0 ? (
-          <ul className="space-y-2 max-h-60 overflow-y-auto pr-2">
-            {history.map((entry, idx: number) => (
-              <li
-                key={idx}
-                className="text-xs border rounded-md p-2 bg-card/50"
-              >
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Record {entry.id}</span>
-                  <span className="text-muted-foreground">
-                    {new Date(entry.timestamp).toLocaleString()}
-                  </span>
-                </div>
-                <div className="mt-1">
-                  {entry.previousStatus} → {entry.newStatus}
-                </div>
-                {entry.note && (
-                  <p className="mt-1 text-muted-foreground">
-                    Note: {entry.note}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted-foreground text-sm">
-            No status changes yet.
-          </p>
-        )}
-      </div>
+
+       <RecordHistoryLog />
+
     </div>
   );
 }

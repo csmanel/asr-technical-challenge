@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
  * optional reviewer note to aid traceability. A Clear action is provided to
  * reset the in‑memory log.
  */
-export default function HistoryLog() {
+export default function RecordHistoryLog() {
   const { history, clearHistory } = useRecords();
   return (
     <div className="space-y-3 mt-6">

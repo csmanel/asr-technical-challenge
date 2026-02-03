@@ -19,7 +19,6 @@ export default function InterviewPage() {
           memory.
         </p>
         <RecordList />
-        <RecordSummary />
       </div>
     </RecordsProvider>
   );
