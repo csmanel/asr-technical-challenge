@@ -11,7 +11,7 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import type { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button";
 
-import type { RecordItem } from "@/app/interview/types";
+import { RECORD_STATUS_LABELS, STATUSES, type RecordItem } from "@/app/interview/types";
 
 interface RecordCardProps {
   record: RecordItem;
@@ -48,18 +48,18 @@ export default function RecordCard({ record, onSelect }: RecordCardProps) {
         </div>
         <CardAction>
           <Badge variant={statusToVariant[record.status]}>
-            {record.status}
+            {RECORD_STATUS_LABELS[record.status]}
           </Badge>
         </CardAction>
       </CardHeader>
       {record.note && (
-        <CardContent>
+        <CardContent className="border-b pb-4">
           <p className="text-xs sm:text-sm text-muted-foreground">
             Note: {record.note}
           </p>
         </CardContent>
       )}
-      <CardFooter className="border-t pt-4 flex justify-end">
+      <CardFooter className="flex justify-end mt-auto">
         <Button variant="secondary" onClick={() => onSelect(record)}>
           Review
         </Button>
