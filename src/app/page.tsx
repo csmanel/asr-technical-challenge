@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DarkModeToggle } from "./interview/components/DarkModeToggle";
 
 /**
  * Landing page for the interview application. It introduces the context
@@ -87,6 +88,7 @@ export default function HomePage() {
           >
             Start the Interview Task →
           </Link>
+          <DarkModeToggle />
           <p className="text-xs text-muted-foreground">
             Tip: the mock API is in memory and resets when the server restarts.
           </p>
