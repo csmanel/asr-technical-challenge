@@ -1,11 +1,16 @@
-import type { RecordStatus } from "../types";
+import { RECORD_STATUS_LABELS, STATUSES, type RecordStatus } from "../types";
 import { useRecords } from "../context/RecordsContext";
+
+interface RecordSummaryProps { 
+  activeFilter: "all" | RecordStatus; 
+  onFilterChange: (status: "all" | RecordStatus) => void;
+}
 
 /**
  * RecordSummary computes derived counts by status from the current record set
  * provided by RecordsContext and renders them as a lightweight dashboard.
  */
-export default function RecordSummary() {
+export default function RecordSummary({ activeFilter, onFilterChange }: RecordSummaryProps) {
   const { records } = useRecords();
   // Compute counts for each status
   const counts = records.reduce(
@@ -15,12 +20,7 @@ export default function RecordSummary() {
     },
     {} as Record<RecordStatus, number>,
   );
-  const statuses: RecordStatus[] = [
-    "pending",
-    "approved",
-    "flagged",
-    "needs_revision",
-  ];
+
   return (
     <section aria-label="Record status summary" className="space-y-3">
       <div className="flex items-baseline justify-between">
@@ -32,16 +32,23 @@ export default function RecordSummary() {
         </p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statuses.map((status) => {
+        {STATUSES.map((status) => {
           const count = counts[status] ?? 0;
+          const isActive = activeFilter === status;
+
           return (
-            <div
+            <button
               key={status}
-              className="rounded-lg border bg-card/50 p-3 sm:p-4 flex flex-col items-center justify-center shadow-sm hover:bg-card transition-colors"
+              onClick={() => onFilterChange(isActive ? "all" : status)}
+              className={`hover:cursor-pointer rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center shadow-sm hover:bg-card transition-colors ${
+                isActive
+                  ? "ring-2 ring-primary bg-card"
+                  : "border bg-card/50"
+              }
+              `}
             >
               <span className="text-xs sm:text-sm font-medium capitalize text-muted-foreground">
-                {/* {status.replace("_", " ")} */}
-              test
+                {RECORD_STATUS_LABELS[status]}
               </span>
               <span
                 className="text-xl sm:text-2xl font-bold mt-1 tracking-tight"
@@ -49,7 +56,7 @@ export default function RecordSummary() {
               >
                 {count}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>
