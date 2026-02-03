@@ -6,7 +6,7 @@
 
 *RecordsContext*
 
-- Naming mismatch 
+- I found using data to be a bit too vague and required to map values when its not entirely necessary. Rather than mapping `records -> data` we can just use records.
 ```js 
 const [data, setData] = useState(...)
 const [busy, setBusy] = useState(...)
@@ -22,9 +22,9 @@ const value = {
 ...
 }
 ```
-*I do think it is alright for these values to not match, however the previous values made it unclear what was actually being accessed. 'Data' was too vague, where 'records' is perfectly clear and removes the need for mapping*
-- Context file contained all logic while hook was empty
-- Stale closure in doUpdate 
+
+- `RecordsContext` contained all logic while hook was empty/not being fully utilized
+- `doUpdate` improperly sets state of `prevRecord`
 ```js
 // previously: reading records after setRecords so we no longer see the previous record
 setRecords((prev) => prev.map(...));
@@ -36,7 +36,6 @@ const updated = await patchRecord(...);
 setRecords((prev) => prev.map(...));
 
 ```
-- Potential duplicate error handling (setError + throw) (*needs to be tested*)
 - Redundant reLoad wrapped
 
 *RecordList*
@@ -68,7 +67,6 @@ const display = records;
 const filteredRecords = statusFilter === 'all'
   ? records
   : records.filter(r => r.status === statusFilter);
-  // I would prefer to use 'record' instead of 'r' to be even more clear, but that isn't a change that needs to be made
 ```
 - Unclear variable names (`fltr`, `sel`, `display`) 
 
@@ -153,3 +151,5 @@ type ValidationErrorCode = 'NOTE_REQUIRED';
 const ERROR_MESSAGES: Record<ValidationErrorCode, string> = {
   NOTE_REQUIRED: "A note is required for this status"
 };
+```
+

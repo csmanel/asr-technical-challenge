@@ -9,6 +9,9 @@ import { DarkModeToggle } from "./interview/components/DarkModeToggle";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-background">
+      <div className="absolute top-4 right-4">
+        <DarkModeToggle />
+      </div>
       <div className="mx-auto max-w-3xl px-6 py-14">
         <p className="text-sm font-medium text-muted-foreground">
           VectorCam Web Interview
@@ -88,7 +91,6 @@ export default function HomePage() {
           >
             Start the Interview Task →
           </Link>
-          <DarkModeToggle />
           <p className="text-xs text-muted-foreground">
             Tip: the mock API is in memory and resets when the server restarts.
           </p>

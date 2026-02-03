@@ -36,6 +36,15 @@ interface RecordsContextValue {
    * Clears the history log.
    */
   clearHistory: () => void;
+
+  page: number;
+  limit: number;
+  totalCount: number;
+  nextPage: () => void;
+  prevPage: () => void;
+  statusFilter: RecordStatus | null;
+  statusCounts: Record<RecordStatus, number>;
+  setStatusFilter: (filter: RecordStatus | null) => void;
 }
 
 const RecordsContext = createContext<RecordsContextValue | undefined>(undefined);

@@ -120,8 +120,33 @@ let history: RecordHistoryEntry[] = [];
  */
 
 // GET /api/mock/records
-export async function GET() {
-  return NextResponse.json({ records, history });
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url); 
+  const page = parseInt(searchParams.get("page") ?? "1", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "0", 10);
+  const statusFilter = searchParams.get("status");
+
+  const statusCounts = records.reduce(
+    (acc, r) => {
+      acc[r.status] = (acc[r.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+  
+  const filteredRecords = statusFilter
+  ? records.filter((r) => r.status === statusFilter)
+  : records;
+
+  const totalCount = filteredRecords.length; 
+
+  if (limit > 0 ) {
+    const start = (page - 1) * limit; 
+    const paginatedRecords = filteredRecords.slice(start, start + limit);
+    return NextResponse.json({ records: paginatedRecords, totalCount, statusCounts, history });
+  }
+
+  return NextResponse.json({ records: filteredRecords, totalCount, statusCounts, history });
 }
 
 // PATCH /api/mock/records
