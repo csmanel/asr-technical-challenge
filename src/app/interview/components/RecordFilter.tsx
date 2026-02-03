@@ -5,7 +5,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import type { RecordStatus } from "../types";
+import { RECORD_STATUS_LABELS, STATUSES, type RecordStatus } from "../types";
 
 /**
  * RecordFilter provides a status selection UI decoupled from the records list
@@ -18,13 +18,7 @@ interface RecordFilterProps {
 }
 
 export default function RecordFilter({ value, onChange }: RecordFilterProps) {
-  const options: ("all" | RecordStatus)[] = [
-    "all",
-    "pending",
-    "approved",
-    "flagged",
-    "needs_revision",
-  ];
+
   return (
     <div className="w-56">
       <label className="block text-sm font-medium mb-1">Filter by status</label>
@@ -36,9 +30,10 @@ export default function RecordFilter({ value, onChange }: RecordFilterProps) {
           <SelectValue placeholder="All" />
         </SelectTrigger>
         <SelectContent>
-          {options.map((opt) => (
-            <SelectItem key={opt} value={opt} className="capitalize">
-              {opt === "all" ? "All" : opt.replace("_", " ")}
+          <SelectItem value="all">All</SelectItem>
+          {STATUSES.map((status) => (
+            <SelectItem key={status} value={status}>
+              {RECORD_STATUS_LABELS[status]}
             </SelectItem>
           ))}
         </SelectContent>
