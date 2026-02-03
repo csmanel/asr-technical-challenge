@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RecordHistoryEntry, RecordItem, RecordStatus, UpdateResult } from "../types";
-import { fetchRecords, patchRecord, StatusCounts } from "../api/records";
+import { deleteHistory, fetchRecords, patchRecord, StatusCounts } from "../api/records";
 
 const DEFAULT_PAGE_SIZE = 6;
 
@@ -92,8 +92,13 @@ export function useRecordState() {
     [records, refresh],
   );
 
-  const clearHistory = useCallback(() => {
+  const clearHistory = useCallback(async () => {
     setRecordHistory([]);
+    try { 
+      await deleteHistory();
+    } catch (err) {
+      console.error("Failed to clear history on server:", err)
+    }
   }, []);
 
   return {

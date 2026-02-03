@@ -194,3 +194,8 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }
+
+export async function DELETE() {
+  history = [];
+  return NextResponse.json({ success: true })
+}
